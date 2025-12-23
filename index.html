@@ -1,0 +1,937 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PW Ambassador - Exclusive Discount Booking</title>
+    
+    <!-- Bootstrap 5 -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- SweetAlert2 -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    
+    <style>
+        :root {
+            --primary-black: #000000;
+            --primary-white: #ffffff;
+            --accent-red: #e63946;
+            --light-gray: #f8f9fa;
+            --dark-gray: #343a40;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+            background-color: var(--primary-white);
+            color: var(--primary-black);
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+        
+        /* Animations */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        @keyframes slideIn {
+            from { transform: translateX(-100%); }
+            to { transform: translateX(0); }
+        }
+        
+        .fade-in {
+            animation: fadeIn 0.8s ease-out;
+        }
+        
+        .slide-in {
+            animation: slideIn 0.5s ease-out;
+        }
+        
+        /* Header & Navigation */
+        .navbar {
+            background-color: var(--primary-white);
+            box-shadow: 0 2px 20px rgba(0, 0, 0, 0.1);
+            padding: 1.2rem 0;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+        
+        .navbar-brand {
+            font-weight: 800;
+            font-size: 1.8rem;
+            color: var(--primary-black) !important;
+            letter-spacing: -0.5px;
+        }
+        
+        .navbar-brand span {
+            color: var(--accent-red);
+        }
+        
+        .nav-link {
+            font-weight: 600;
+            color: var(--dark-gray) !important;
+            transition: color 0.3s ease;
+            margin: 0 0.5rem;
+        }
+        
+        .nav-link:hover {
+            color: var(--accent-red) !important;
+        }
+        
+        /* Hero Section */
+        .hero-section {
+            background: linear-gradient(135deg, var(--primary-white) 0%, #f8f9fa 100%);
+            padding: 6rem 0;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .hero-section::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -50%;
+            width: 100%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(230, 57, 70, 0.05) 0%, transparent 70%);
+            z-index: 0;
+        }
+        
+        .hero-title {
+            font-size: 3.5rem;
+            font-weight: 900;
+            line-height: 1.2;
+            margin-bottom: 1.5rem;
+            background: linear-gradient(90deg, #000000, #434343);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        
+        .hero-subtitle {
+            font-size: 1.3rem;
+            color: var(--dark-gray);
+            margin-bottom: 2rem;
+            max-width: 600px;
+        }
+        
+        .cta-button {
+            background-color: var(--primary-black);
+            color: var(--primary-white);
+            border: none;
+            padding: 1rem 2.5rem;
+            font-weight: 700;
+            font-size: 1.1rem;
+            border-radius: 50px;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-block;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .cta-button:hover {
+            background-color: var(--accent-red);
+            color: var(--primary-white);
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(230, 57, 70, 0.3);
+        }
+        
+        .cta-button:active {
+            transform: translateY(0);
+        }
+        
+        /* Booking Form */
+        .booking-section {
+            padding: 5rem 0;
+            background-color: var(--light-gray);
+        }
+        
+        .section-title {
+            font-size: 2.5rem;
+            font-weight: 800;
+            margin-bottom: 3rem;
+            text-align: center;
+            position: relative;
+        }
+        
+        .section-title::after {
+            content: '';
+            position: absolute;
+            bottom: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 80px;
+            height: 4px;
+            background-color: var(--accent-red);
+        }
+        
+        .booking-card {
+            background: var(--primary-white);
+            border-radius: 20px;
+            padding: 3rem;
+            box-shadow: 0 15px 50px rgba(0, 0, 0, 0.1);
+            border: none;
+            transition: transform 0.3s ease;
+        }
+        
+        .booking-card:hover {
+            transform: translateY(-5px);
+        }
+        
+        .form-label {
+            font-weight: 600;
+            color: var(--primary-black);
+            margin-bottom: 0.5rem;
+        }
+        
+        .form-control, .form-select {
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            padding: 0.75rem 1rem;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            background-color: var(--primary-white);
+        }
+        
+        .form-control:focus, .form-select:focus {
+            border-color: var(--primary-black);
+            box-shadow: 0 0 0 0.2rem rgba(0, 0, 0, 0.1);
+        }
+        
+        .form-control::placeholder {
+            color: #999;
+        }
+        
+        .submit-btn {
+            background-color: var(--primary-black);
+            color: var(--primary-white);
+            border: none;
+            padding: 1rem 3rem;
+            font-weight: 700;
+            font-size: 1.1rem;
+            border-radius: 50px;
+            transition: all 0.3s ease;
+            width: 100%;
+            margin-top: 1.5rem;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .submit-btn:hover {
+            background-color: var(--accent-red);
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(230, 57, 70, 0.3);
+        }
+        
+        .submit-btn:disabled {
+            background-color: #cccccc;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+        
+        /* Loading Spinner */
+        .spinner {
+            display: none;
+            width: 50px;
+            height: 50px;
+            border: 5px solid #f3f3f3;
+            border-top: 5px solid var(--accent-red);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 2rem auto;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        /* Features Section */
+        .features-section {
+            padding: 5rem 0;
+            background-color: var(--primary-white);
+        }
+        
+        .feature-card {
+            text-align: center;
+            padding: 2.5rem;
+            border-radius: 15px;
+            background: var(--light-gray);
+            transition: all 0.3s ease;
+            height: 100%;
+            border: 2px solid transparent;
+        }
+        
+        .feature-card:hover {
+            transform: translateY(-10px);
+            border-color: var(--primary-black);
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.1);
+        }
+        
+        .feature-icon {
+            font-size: 3rem;
+            color: var(--accent-red);
+            margin-bottom: 1.5rem;
+        }
+        
+        .feature-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+        }
+        
+        /* Footer */
+        .footer {
+            background-color: var(--primary-black);
+            color: var(--primary-white);
+            padding: 4rem 0 2rem;
+        }
+        
+        .footer-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 1.5rem;
+            color: var(--primary-white);
+        }
+        
+        .footer-links a {
+            color: #cccccc;
+            text-decoration: none;
+            transition: color 0.3s ease;
+            display: block;
+            margin-bottom: 0.75rem;
+        }
+        
+        .footer-links a:hover {
+            color: var(--accent-red);
+        }
+        
+        .social-icons {
+            display: flex;
+            gap: 1rem;
+            margin-top: 1.5rem;
+        }
+        
+        .social-icon {
+            width: 45px;
+            height: 45px;
+            background-color: rgba(255, 255, 255, 0.1);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--primary-white);
+            text-decoration: none;
+            transition: all 0.3s ease;
+        }
+        
+        .social-icon:hover {
+            background-color: var(--accent-red);
+            transform: translateY(-3px);
+        }
+        
+        .copyright {
+            text-align: center;
+            padding-top: 2rem;
+            margin-top: 2rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            color: #999;
+            font-size: 0.9rem;
+        }
+        
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .hero-title {
+                font-size: 2.5rem;
+            }
+            
+            .section-title {
+                font-size: 2rem;
+            }
+            
+            .booking-card {
+                padding: 2rem;
+            }
+            
+            .feature-card {
+                margin-bottom: 1.5rem;
+            }
+        }
+        
+        @media (max-width: 576px) {
+            .hero-title {
+                font-size: 2rem;
+            }
+            
+            .hero-section {
+                padding: 4rem 0;
+            }
+            
+            .booking-section, .features-section {
+                padding: 3rem 0;
+            }
+        }
+        
+        /* Utility Classes */
+        .text-accent {
+            color: var(--accent-red) !important;
+        }
+        
+        .mb-6 {
+            margin-bottom: 4rem !important;
+        }
+        
+        .mt-6 {
+            margin-top: 4rem !important;
+        }
+        
+        .fw-800 {
+            font-weight: 800 !important;
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar navbar-expand-lg navbar-light">
+        <div class="container">
+            <a class="navbar-brand fw-800" href="#">
+                <i class="fas fa-graduation-cap text-accent"></i> PW<span>Ambassador</span>
+            </a>
+            
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="#booking">Book Slot</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#features">How It Works</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#contact">Contact</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="admin.html" target="_blank">
+                            <i class="fas fa-lock me-1"></i> Admin Login
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="hero-section">
+        <div class="container">
+            <div class="row align-items-center">
+                <div class="col-lg-6 fade-in">
+                    <h1 class="hero-title">Unlock Maximum Discount on Your Batch</h1>
+                    <p class="hero-subtitle">
+                        Book an exclusive 20-minute video call with our PW Ambassador and secure the highest possible discount for your target batch. Limited slots available!
+                    </p>
+                    <div class="d-flex flex-wrap gap-3">
+                        <a href="#booking" class="cta-button">
+                            <i class="fas fa-calendar-check me-2"></i> Book Your Slot Now
+                        </a>
+                        <a href="#features" class="cta-button" style="background-color: transparent; color: var(--primary-black); border: 2px solid var(--primary-black);">
+                            <i class="fas fa-play-circle me-2"></i> How It Works
+                        </a>
+                    </div>
+                    
+                    <div class="mt-5">
+                        <div class="d-flex align-items-center mb-2">
+                            <i class="fas fa-check-circle text-accent me-2"></i>
+                            <span>100% Verified Ambassadors</span>
+                        </div>
+                        <div class="d-flex align-items-center mb-2">
+                            <i class="fas fa-check-circle text-accent me-2"></i>
+                            <span>Guaranteed Maximum Discount</span>
+                        </div>
+                        <div class="d-flex align-items-center">
+                            <i class="fas fa-check-circle text-accent me-2"></i>
+                            <span>Instant Email Confirmation</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="col-lg-6 mt-5 mt-lg-0 fade-in">
+                    <div class="position-relative">
+                        <div class="rounded-3 overflow-hidden shadow-lg">
+                            <img src="https://images.unsplash.com/photo-1551836026-d5c2c5af78e4?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" 
+                                 alt="PW Ambassador Session" 
+                                 class="img-fluid w-100">
+                        </div>
+                        <div class="position-absolute top-0 start-0 w-100 h-100 d-flex align-items-center justify-content-center">
+                            <div class="bg-white rounded-3 p-4 shadow-lg" style="max-width: 300px; transform: translate(20px, -20px);">
+                                <h5 class="fw-bold mb-2">📅 20-Minute Exclusive Session</h5>
+                                <p class="mb-0 small">Personalized guidance for maximum discount</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Booking Form Section -->
+    <section id="booking" class="booking-section">
+        <div class="container">
+            <h2 class="section-title">Book Your Exclusive Session</h2>
+            <p class="text-center text-muted mb-5">Fill in your details to secure your 20-minute slot with a PW Ambassador</p>
+            
+            <div class="row justify-content-center">
+                <div class="col-lg-8">
+                    <div class="booking-card slide-in">
+                        <form id="bookingForm">
+                            <div class="row g-4">
+                                <div class="col-md-6">
+                                    <label for="name" class="form-label">Full Name *</label>
+                                    <input type="text" class="form-control" id="name" name="name" required 
+                                           placeholder="Enter your full name">
+                                </div>
+                                
+                                <div class="col-md-6">
+                                    <label for="email" class="form-label">Email Address *</label>
+                                    <input type="email" class="form-control" id="email" name="email" required 
+                                           placeholder="Enter your email">
+                                </div>
+                                
+                                <div class="col-md-6">
+                                    <label for="phone" class="form-label">Phone Number *</label>
+                                    <input type="tel" class="form-control" id="phone" name="phone" required 
+                                           placeholder="Enter your 10-digit mobile number">
+                                </div>
+                                
+                                <div class="col-md-6">
+                                    <label for="batchName" class="form-label">Target Batch *</label>
+                                    <select class="form-select" id="batchName" name="batchName" required>
+                                        <option value="">Select your batch</option>
+                                        <!-- Batches will be loaded dynamically -->
+                                    </select>
+                                </div>
+                                
+                                <div class="col-md-6">
+                                    <label for="date" class="form-label">Preferred Date *</label>
+                                    <input type="date" class="form-control" id="date" name="date" required 
+                                           min="">
+                                </div>
+                                
+                                <div class="col-md-6">
+                                    <label for="time" class="form-label">Preferred Time Slot *</label>
+                                    <select class="form-select" id="time" name="time" required>
+                                        <option value="">Select time slot</option>
+                                        <!-- Time slots will be loaded dynamically -->
+                                    </select>
+                                </div>
+                                
+                                <div class="col-12">
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" id="terms" required>
+                                        <label class="form-check-label" for="terms">
+                                            I agree to receive communication regarding my booking and exclusive offers from PW Ambassador
+                                        </label>
+                                    </div>
+                                </div>
+                                
+                                <div class="col-12">
+                                    <button type="submit" class="submit-btn" id="submitBtn">
+                                        <i class="fas fa-paper-plane me-2"></i> Book My Slot Now
+                                    </button>
+                                </div>
+                            </div>
+                        </form>
+                        
+                        <div class="spinner" id="loadingSpinner"></div>
+                        
+                        <div id="successMessage" class="alert alert-success mt-4 d-none" role="alert">
+                            <i class="fas fa-check-circle me-2"></i>
+                            <span id="successText"></span>
+                        </div>
+                        
+                        <div id="errorMessage" class="alert alert-danger mt-4 d-none" role="alert">
+                            <i class="fas fa-exclamation-circle me-2"></i>
+                            <span id="errorText"></span>
+                        </div>
+                    </div>
+                    
+                    <div class="text-center mt-4">
+                        <p class="text-muted small">
+                            <i class="fas fa-shield-alt me-1"></i> Your information is secure and will only be used for booking purposes
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Features Section -->
+    <section id="features" class="features-section">
+        <div class="container">
+            <h2 class="section-title mb-6">How It Works</h2>
+            
+            <div class="row">
+                <div class="col-md-6 col-lg-3 mb-4">
+                    <div class="feature-card fade-in">
+                        <div class="feature-icon">
+                            <i class="fas fa-calendar-alt"></i>
+                        </div>
+                        <h4 class="feature-title">Book Your Slot</h4>
+                        <p class="text-muted">Fill out the booking form with your details and preferred time slot</p>
+                    </div>
+                </div>
+                
+                <div class="col-md-6 col-lg-3 mb-4">
+                    <div class="feature-card fade-in" style="animation-delay: 0.2s;">
+                        <div class="feature-icon">
+                            <i class="fas fa-check-circle"></i>
+                        </div>
+                        <h4 class="feature-title">Get Confirmation</h4>
+                        <p class="text-muted">Receive instant email confirmation of your booking</p>
+                    </div>
+                </div>
+                
+                <div class="col-md-6 col-lg-3 mb-4">
+                    <div class="feature-card fade-in" style="animation-delay: 0.4s;">
+                        <div class="feature-icon">
+                            <i class="fas fa-video"></i>
+                        </div>
+                        <h4 class="feature-title">Join the Session</h4>
+                        <p class="text-muted">Attend your 20-minute video call with the PW Ambassador</p>
+                    </div>
+                </div>
+                
+                <div class="col-md-6 col-lg-3 mb-4">
+                    <div class="feature-card fade-in" style="animation-delay: 0.6s;">
+                        <div class="feature-icon">
+                            <i class="fas fa-tag"></i>
+                        </div>
+                        <h4 class="feature-title">Secure Discount</h4>
+                        <p class="text-muted">Get the maximum possible discount on your batch enrollment</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="text-center mt-6">
+                <div class="alert alert-dark d-inline-block" style="background-color: #f8f9fa; border: 2px solid #000;">
+                    <h4 class="fw-bold mb-2">⏰ Limited Time Offer!</h4>
+                    <p class="mb-0">Book your session within the next 24 hours to get an additional 5% discount!</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer id="contact" class="footer">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-4 mb-5 mb-lg-0">
+                    <h3 class="footer-title">
+                        <i class="fas fa-graduation-cap me-2"></i>PW Ambassador
+                    </h3>
+                    <p class="text-light mb-4">
+                        Exclusive discount booking platform for PW students. Get maximum discounts through personalized sessions with verified ambassadors.
+                    </p>
+                    <div class="social-icons">
+                        <a href="#" class="social-icon">
+                            <i class="fab fa-whatsapp"></i>
+                        </a>
+                        <a href="#" class="social-icon">
+                            <i class="fab fa-telegram"></i>
+                        </a>
+                        <a href="#" class="social-icon">
+                            <i class="fab fa-instagram"></i>
+                        </a>
+                        <a href="#" class="social-icon">
+                            <i class="fab fa-youtube"></i>
+                        </a>
+                    </div>
+                </div>
+                
+                <div class="col-lg-4 mb-5 mb-lg-0">
+                    <h3 class="footer-title">Quick Links</h3>
+                    <div class="footer-links">
+                        <a href="#booking">Book a Session</a>
+                        <a href="#features">How It Works</a>
+                        <a href="admin.html" target="_blank">Admin Dashboard</a>
+                        <a href="#">Privacy Policy</a>
+                        <a href="#">Terms of Service</a>
+                    </div>
+                </div>
+                
+                <div class="col-lg-4">
+                    <h3 class="footer-title">Contact Us</h3>
+                    <div class="footer-links">
+                        <p class="text-light mb-2">
+                            <i class="fas fa-envelope me-2 text-accent"></i>
+                            ambassador@pw.com
+                        </p>
+                        <p class="text-light mb-2">
+                            <i class="fas fa-phone me-2 text-accent"></i>
+                            +91 98765 43210
+                        </p>
+                        <p class="text-light">
+                            <i class="fas fa-clock me-2 text-accent"></i>
+                            Mon-Sat: 9 AM - 8 PM
+                        </p>
+                    </div>
+                    
+                    <div class="mt-4">
+                        <a href="admin.html" target="_blank" class="cta-button" style="background-color: var(--accent-red); font-size: 0.9rem; padding: 0.8rem 1.5rem;">
+                            <i class="fas fa-lock me-2"></i> Admin Access
+                        </a>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="copyright">
+                <p>&copy; 2024 PW Ambassador Booking System. All rights reserved.</p>
+                <p class="mb-0">Designed for exclusive discount distribution to PW students</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+    <script>
+        // Configuration
+        const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzaKEP6ZCGvM0quHLzFvyoeAgRqsXmjl3u_svX8Cr4HWyrd1vTDFy9oTOBVNah2tDmP/exec'; // Replace with your deployed URL
+        
+     
+        // DOM Elements
+        const bookingForm = document.getElementById('bookingForm');
+        const submitBtn = document.getElementById('submitBtn');
+        const loadingSpinner = document.getElementById('loadingSpinner');
+        const successMessage = document.getElementById('successMessage');
+        const errorMessage = document.getElementById('errorMessage');
+        const successText = document.getElementById('successText');
+        const errorText = document.getElementById('errorText');
+        const batchSelect = document.getElementById('batchName');
+        const timeSelect = document.getElementById('time');
+        const dateInput = document.getElementById('date');
+        
+        // Set minimum date to today
+        const today = new Date().toISOString().split('T')[0];
+        dateInput.min = today;
+        
+        // Initialize
+        document.addEventListener('DOMContentLoaded', function() {
+            loadBatches();
+            loadAvailableSlots();
+            
+            // Set default date to tomorrow
+            const tomorrow = new Date();
+            tomorrow.setDate(tomorrow.getDate() + 1);
+            dateInput.value = tomorrow.toISOString().split('T')[0];
+        });
+        
+        // Load available batches
+        async function loadBatches() {
+            try {
+                const response = await fetch(`${APPS_SCRIPT_URL}?action=getBatches`);
+                const data = await response.json();
+                
+                if (data.success && data.batches.length > 0) {
+                    batchSelect.innerHTML = '<option value="">Select your batch</option>';
+                    
+                    data.batches.forEach(batch => {
+                        const option = document.createElement('option');
+                        option.value = batch.batch_name;
+                        option.textContent = `${batch.batch_name} - ${batch.discount_percent} OFF`;
+                        batchSelect.appendChild(option);
+                    });
+                }
+            } catch (error) {
+                console.error('Error loading batches:', error);
+            }
+        }
+        
+        // Load available time slots
+        async function loadAvailableSlots() {
+            try {
+                const response = await fetch(`${APPS_SCRIPT_URL}?action=getAvailableSlots`);
+                const data = await response.json();
+                
+                if (data.success && data.slots.length > 0) {
+                    timeSelect.innerHTML = '<option value="">Select time slot</option>';
+                    
+                    data.slots.forEach(slot => {
+                        const option = document.createElement('option');
+                        option.value = `${slot.start_time} - ${slot.end_time}`;
+                        option.textContent = `${slot.start_time} - ${slot.end_time} (${slot.date})`;
+                        option.dataset.date = slot.date;
+                        timeSelect.appendChild(option);
+                    });
+                    
+                    // Filter slots based on selected date
+                    dateInput.addEventListener('change', function() {
+                        filterSlotsByDate(this.value);
+                    });
+                }
+            } catch (error) {
+                console.error('Error loading slots:', error);
+            }
+        }
+        
+        // Filter slots by selected date
+        function filterSlotsByDate(selectedDate) {
+            const options = timeSelect.querySelectorAll('option');
+            
+            options.forEach(option => {
+                if (option.value === '') return;
+                
+                const slotDate = option.dataset.date;
+                if (slotDate === selectedDate) {
+                    option.style.display = '';
+                } else {
+                    option.style.display = 'none';
+                }
+            });
+            
+            // Reset selection
+            timeSelect.value = '';
+        }
+        
+        // Handle form submission
+        bookingForm.addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            // Validate form
+            if (!bookingForm.checkValidity()) {
+                bookingForm.classList.add('was-validated');
+                return;
+            }
+            
+            // Prepare data
+            const formData = {
+                name: document.getElementById('name').value.trim(),
+                email: document.getElementById('email').value.trim(),
+                phone: document.getElementById('phone').value.trim(),
+                batchName: document.getElementById('batchName').value,
+                date: document.getElementById('date').value,
+                time: document.getElementById('time').value,
+                action: 'submitBooking'
+            };
+            
+            // Show loading state
+            submitBtn.disabled = true;
+            loadingSpinner.style.display = 'block';
+            successMessage.classList.add('d-none');
+            errorMessage.classList.add('d-none');
+            
+            try {
+                // Send to Apps Script
+                const response = await fetch(APPS_SCRIPT_URL, {
+                    method: 'POST',
+                    body: JSON.stringify(formData)
+                });
+                
+                const result = await response.json();
+                
+                if (result.success) {
+                    // Show success message
+                    successText.textContent = `Booking submitted successfully! Your Booking ID is: ${result.bookingId}. Please check your email for confirmation.`;
+                    successMessage.classList.remove('d-none');
+                    
+                    // Reset form
+                    bookingForm.reset();
+                    bookingForm.classList.remove('was-validated');
+                    
+                    // Show SweetAlert
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Booking Submitted!',
+                        html: `
+                            <p>Your booking request has been received successfully.</p>
+                            <p><strong>Booking ID:</strong> ${result.bookingId}</p>
+                            <p>Please check your email for confirmation within 24 hours.</p>
+                        `,
+                        confirmButtonText: 'Got it!',
+                        confirmButtonColor: '#000000'
+                    });
+                    
+                    // Scroll to success message
+                    successMessage.scrollIntoView({ behavior: 'smooth' });
+                } else {
+                    throw new Error(result.message || 'Submission failed');
+                }
+            } catch (error) {
+                // Show error message
+                errorText.textContent = `Error: ${error.message}`;
+                errorMessage.classList.remove('d-none');
+                
+                // Scroll to error message
+                errorMessage.scrollIntoView({ behavior: 'smooth' });
+                
+                console.error('Submission error:', error);
+            } finally {
+                // Reset loading state
+                submitBtn.disabled = false;
+                loadingSpinner.style.display = 'none';
+            }
+        });
+        
+        // Form validation styling
+        const inputs = bookingForm.querySelectorAll('input, select');
+        inputs.forEach(input => {
+            input.addEventListener('input', function() {
+                if (this.checkValidity()) {
+                    this.classList.remove('is-invalid');
+                    this.classList.add('is-valid');
+                } else {
+                    this.classList.remove('is-valid');
+                    this.classList.add('is-invalid');
+                }
+            });
+        });
+        
+        // Phone number validation
+        document.getElementById('phone').addEventListener('input', function() {
+            const phone = this.value.replace(/\D/g, '');
+            this.value = phone;
+            
+            if (phone.length === 10) {
+                this.classList.remove('is-invalid');
+                this.classList.add('is-valid');
+            } else if (phone.length > 0) {
+                this.classList.remove('is-valid');
+                this.classList.add('is-invalid');
+            }
+        });
+        
+        // Scroll animations
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -50px 0px'
+        };
+        
+        const observer = new IntersectionObserver(function(entries) {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('fade-in');
+                    observer.unobserve(entry.target);
+                }
+            });
+        }, observerOptions);
+        
+        // Observe elements for animation
+        document.querySelectorAll('.feature-card').forEach(card => {
+            observer.observe(card);
+        });
+    </script>
+</body>
+</html>
